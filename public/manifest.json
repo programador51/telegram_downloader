@@ -1,0 +1,31 @@
+{
+  "name": "Telegram Downloader",
+  "description": "Allow download telegram media from channels or groups with media protection",
+  "version": "1.0.0",
+  "short_name": "Tg Downloader",
+  "manifest_version": 2,
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ],
+  "icons": {
+    "48": "tg.jpg"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.web.telegram.org/*"],
+      "js": ["content_script.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_title": "Telegram downloader",
+    "default_icon": {
+      "48": "tg.jpg"
+    }
+  }
+}

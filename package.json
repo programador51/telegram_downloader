@@ -1,0 +1,38 @@
+{
+  "name": "telegram_addon_downloader",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "buildAddOn": "tsc && vite build --config viteAddOn.config.ts",
+    "buildAddOnBg": "tsc && vite build --config viteAddOnBg.config.ts",
+    "build": "tsc && vite build",
+    "create": "npm run build && npm run buildAddOn && npm run buildAddOnBg",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "bootswatch": "^5.3.3",
+    "byte-size": "^8.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sass": "^1.72.0"
+  },
+  "devDependencies": {
+    "@types/byte-size": "^8.1.2",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@types/webextension-polyfill": "^0.10.7",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "rollup-plugin-copy": "^3.5.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "webextension-polyfill": "^0.10.0"
+  }
+}

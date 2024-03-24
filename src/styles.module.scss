@@ -1,0 +1,34 @@
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 25%);
+  justify-content: space-around;
+  gap: 10px;
+  padding: 10px 0;
+  background-color: transparent;
+}
+
+.addOn {
+  width: 100%;
+  height: 100%;
+  padding: 20px 0;
+  box-sizing: border-box;
+
+  h1,
+  footer {
+    position: sticky;
+    background: var(--primaryBackground);
+    padding: 20px;
+  }
+
+  h1 {
+    text-align: center;
+    top: 0;
+  }
+
+  footer {
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

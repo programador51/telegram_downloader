@@ -1,0 +1,29 @@
+.itemGallery {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  padding: 10px;
+  gap: 5px 0;
+  button {
+    width: 100%;
+  }
+
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #80808014;
+  }
+
+  span,p{
+    margin:0;
+  }
+
+  img {
+    height: 150px;
+    object-fit: contain;
+    width: 100%;
+  }
+}

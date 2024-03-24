@@ -1,0 +1,122 @@
+:root {
+  --primaryBackground: rgb(247, 247, 247);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+dl,
+fieldset,
+figure,
+blockquote {
+  margin: 0;
+}
+
+/* Remove default padding */
+body,
+fieldset,
+figure,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ol,
+p,
+ul {
+  padding: 0;
+}
+
+/* Set default font size and line height */
+body {
+  font-size: 1rem;
+  line-height: 1.5;
+  width: 500px;
+  min-height: 300px;
+  max-height: 500px;
+  background: var(--primaryBackground) !important;
+  color: #30a2e6;
+  font-family: "Courier New", Courier, monospace;
+}
+
+html {
+  background: var(--primaryBackground) !important;
+}
+
+/* Remove list styles */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Remove default styles for links */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Remove default styles for buttons */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Remove default border */
+button,
+input,
+select,
+textarea {
+  border: none;
+}
+
+/* Set vertical alignment to baseline */
+button,
+input,
+select,
+textarea {
+  vertical-align: baseline;
+}
+
+/* Remove default outline */
+button,
+input,
+select,
+textarea {
+  outline: none;
+}
+
+/* Remove default background color */
+button,
+input,
+select,
+textarea {
+  background-color: transparent;
+}
+
+@media (prefers-color-scheme: light) {
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primaryBackground: rgb(50, 50, 50);
+  }
+}
