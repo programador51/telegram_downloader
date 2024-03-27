@@ -81,6 +81,11 @@
     "semantic-release": "semantic-release --branches main",
     "commit": "cz"
   },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
   "dependencies": {
     "bootswatch": "^5.3.3",
     "byte-size": "^8.1.1",
@@ -122,7 +127,6 @@
     "vite": "^5.2.0",
     "webextension-polyfill": "^0.10.0"
   },
-  "branches":["main"],
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
