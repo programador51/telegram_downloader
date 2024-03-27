@@ -2,6 +2,72 @@
   "name": "telegram_addon_downloader",
   "private": true,
   "version": "0.0.0",
+  "author": {
+    "name": "José Luis Pérez Olguín"
+  },
+  "description": "Firefox extension to download content from private/non downloable groups or channels",
+  "keywords": [
+    "react",
+    "download",
+    "media",
+    "video",
+    "audio",
+    "stream",
+    "downloader",
+    "extractor",
+    "grabber",
+    "ripper",
+    "capture",
+    "save",
+    "fetch",
+    "record",
+    "content",
+    "extract",
+    "offline",
+    "grab",
+    "download manager",
+    "web downloader",
+    "web media downloader",
+    "web content downloader",
+    "web video downloader",
+    "web audio downloader",
+    "video downloader",
+    "audio downloader",
+    "media downloader",
+    "browser extension",
+    "Firefox extension",
+    "web extension",
+    "media saver",
+    "stream saver",
+    "download tool",
+    "web media tool",
+    "web content tool",
+    "web video tool",
+    "web audio tool",
+    "video tool",
+    "audio tool",
+    "media tool",
+    "browser add-on",
+    "Firefox add-on",
+    "web add-on",
+    "content extractor",
+    "video extractor",
+    "audio extractor",
+    "media extractor",
+    "video ripper",
+    "audio ripper",
+    "media ripper",
+    "media capture",
+    "web media capture",
+    "video capture",
+    "audio capture",
+    "content capture",
+    "web content capture",
+    "stream capture",
+    "telegram",
+    "web-telegram"
+  ],
+  "readme": "https://github.com/programador51/telegram_downloader?tab=readme-ov-file#telegram-downloader",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,7 +77,9 @@
     "create": "npm run build && npm run buildAddOn && npm run buildAddOnBg",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "start:firefox": "web-ext run --source-dir ./dist"
+    "start:firefox": "web-ext run --source-dir ./dist",
+    "semantic-release": "semantic-release --branches main",
+    "commit": "cz"
   },
   "dependencies": {
     "bootswatch": "^5.3.3",
@@ -19,6 +87,20 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.72.0"
+  },
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/changelog",
+    "@semantic-release/github",
+    "@semantic-release/git"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/programador51/telegram_downloader"
   },
   "devDependencies": {
     "@types/byte-size": "^8.1.2",
@@ -28,12 +110,19 @@
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "rollup-plugin-copy": "^3.5.0",
+    "semantic-release": "^23.0.6",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
     "webextension-polyfill": "^0.10.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
