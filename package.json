@@ -103,6 +103,8 @@
     "url": "https://github.com/programador51/telegram_downloader"
   },
   "devDependencies": {
+    "@semantic-release/github": "^10.0.2",
+    "@semantic-release/release-notes-generator": "^13.0.0",
     "@types/byte-size": "^8.1.2",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
