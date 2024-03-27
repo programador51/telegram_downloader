@@ -7,7 +7,10 @@ import { downloadBase64 } from "../../helpers/files";
 export default function useAddOn() {
   const [state, setState] = useState<CrawledImageDom[]>([]);
 
+
   useEffect(() => {
+    console.log('Hello world :)')
+
     browser.runtime.onMessage.addListener(function (
       message: MessageBrowserActions<"crawledContent">
     ) {
