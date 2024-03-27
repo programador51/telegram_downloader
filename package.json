@@ -10,7 +10,8 @@
     "build": "tsc && vite build",
     "create": "npm run build && npm run buildAddOn && npm run buildAddOnBg",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:firefox": "web-ext run --source-dir ./dist"
   },
   "dependencies": {
     "bootswatch": "^5.3.3",
