@@ -29,5 +29,5 @@ jobs:
         run: npm clean-install
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH }}          
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}          
         run: npx semantic-release
