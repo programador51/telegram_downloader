@@ -5,9 +5,10 @@ const INITIAL_STATE: GlobalStateI = {
   showThumbnails: false,
   zipBulkDownloads: false,
   displayDownloadOnChat: true,
+  initialLoad: true,
 };
 
-export default function useGlobal():ReturnUseGlobal {
+export default function useGlobal(): ReturnUseGlobal {
   const [state, setState] = useState<GlobalStateI>(INITIAL_STATE);
 
   useEffect(() => {
@@ -16,12 +17,40 @@ export default function useGlobal():ReturnUseGlobal {
     const parsedData: GlobalStateI =
       data === null ? INITIAL_STATE : JSON.parse(data);
 
-    setState(parsedData);
-
-    console.log(parsedData);
+    window.localStorage.setItem("configuration", JSON.stringify(parsedData));
+    setState({ ...parsedData, initialLoad: false });
   }, []);
+
+  useEffect(() => {
+    if (state.initialLoad) return;
+
+    const info = JSON.stringify(state);
+
+    window.localStorage.setItem("configuration", info);
+  }, [state]);
+
+  const setShowThumbnails = (showThumbnails: boolean) =>
+    setState((current) => ({
+      ...current,
+      showThumbnails,
+    }));
+
+  const setBulkDownload = (zipBulkDownloads: boolean) =>
+    setState((current) => ({
+      ...current,
+      zipBulkDownloads,
+    }));
+
+  const setDisplayDownloadOnChat = (displayDownloadOnChat: boolean) =>
+    setState((current) => ({
+      ...current,
+      displayDownloadOnChat,
+    }));
 
   return {
     ...state,
+    setShowThumbnails,
+    setBulkDownload,
+    setDisplayDownloadOnChat,
   };
 }

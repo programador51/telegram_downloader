@@ -124,7 +124,7 @@ svg{
     --primaryBackground: rgb(50, 50, 50);
   }
 
-  *:not(label, input) {
+  *:not(label, input,select,option) {
     color: white !important;
   }
 }

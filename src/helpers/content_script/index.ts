@@ -1,6 +1,6 @@
 export function showHiddenMediaBtns() {
   const cssStyles = `
-    .media-viewer-buttons button{
+    .media-viewer-buttons button:nth-child(n+3){
         display:block !important;
     }
     `;

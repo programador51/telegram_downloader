@@ -1,14 +1,19 @@
 import browser from "webextension-polyfill";
 import { CrawledImageDom } from "../../typesContentScript";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MessageBrowserActions } from "../../helpers/content_script/types";
 import { downloadBase64 } from "../../helpers/files";
+import { ContextGlobal } from "../../structure/configuration/Global";
 
 export default function useAddOn() {
   const [state, setState] = useState<CrawledImageDom[]>([]);
 
+  const global = useContext(ContextGlobal)
 
   useEffect(() => {
+
+    if(global===undefined) return
+
     browser.runtime.onMessage.addListener(function (
       message: MessageBrowserActions<"crawledContent">
     ) {
@@ -33,13 +38,15 @@ export default function useAddOn() {
     };
 
     browser.runtime.sendMessage(JSON.stringify(triggerMessage));
-  }, []);
+  }, [global]);
 
   function appendCrawledImage(dto: string | CrawledImageDom[]) {
     const crawledContent: CrawledImageDom[] =
       typeof dto === "string" ? JSON.parse(dto) : dto;
 
-    setState(crawledContent);
+    const parsed = global?.showThumbnails ? crawledContent : crawledContent.filter(item=>item.height > 320 && item.width > 320)
+
+    setState(parsed);
   }
 
   function handleDownloadAll() {
