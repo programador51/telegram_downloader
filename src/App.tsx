@@ -9,8 +9,6 @@ function App() {
 
   const key = useRef(`${window.crypto.randomUUID()}`);
 
-  
-
   return (
     <main className={ui.addOn}>
       <Header />
@@ -35,7 +33,7 @@ function App() {
 
         <button
           className="btn btn-primary"
-          onClick={() => hook.handleDownloadAll()}
+          onClick={async () => await hook.handleDownloadAll()}
         >
           Download all
         </button>

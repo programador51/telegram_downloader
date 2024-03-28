@@ -1,3 +1,21 @@
+import JSZip from "jszip";
+
+export async function zipGallery(gallery: string[]): Promise<Blob> {
+  const zip = new JSZip();
+  for (let i = 0; i < gallery.length; i++) {
+
+    const name = `${i+1}`.padStart(10,"0");
+
+    zip.file(`${name}.jpg`, gallery[i].split(",")[1], {
+      base64: true,
+    });
+  }
+
+  const data = await zip.generateAsync({ type: "blob" });
+
+  return data;
+}
+
 /**
  *
  * @param base64String - Bas64 file
@@ -87,5 +105,5 @@ export function downloadBase64(base64: string) {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 
-  return blob
+  return blob;
 }

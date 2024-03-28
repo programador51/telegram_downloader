@@ -2,6 +2,25 @@
   --primaryBackground: rgb(247, 247, 247);
 }
 
+/* Default font size */
+* {
+  font-size: 16px;
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 768px) {
+  * {
+    font-size: 14px;
+  }
+}
+
+/* Media query for even smaller screens */
+@media screen and (max-width: 480px) {
+  * {
+    font-size: 12px;
+  }
+}
+
 *,
 *::before,
 *::after {
@@ -112,7 +131,7 @@ textarea {
   background-color: transparent;
 }
 
-svg{
+svg {
   height: 20px;
 }
 
@@ -124,7 +143,7 @@ svg{
     --primaryBackground: rgb(50, 50, 50);
   }
 
-  *:not(label, input,select,option) {
+  *:not(label, input, select, option) {
     color: white !important;
   }
 }
