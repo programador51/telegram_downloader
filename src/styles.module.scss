@@ -13,14 +13,14 @@
   padding: 20px 0;
   box-sizing: border-box;
 
-  h1,
+  > div:nth-child(1),
   footer {
     position: sticky;
     background: var(--primaryBackground);
     padding: 20px;
   }
 
-  h1 {
+  > div:nth-child(1) {
     text-align: center;
     top: 0;
   }
@@ -30,5 +30,19 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+}
+
+.errorContainer{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding:20px;
+  align-items: center;
+  flex-direction: column;
+  gap:10px 0;
+  p,h1{
+    margin:0;
   }
 }

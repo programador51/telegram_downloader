@@ -9,8 +9,6 @@ export default function useAddOn() {
 
 
   useEffect(() => {
-    console.log('Hello world :)')
-
     browser.runtime.onMessage.addListener(function (
       message: MessageBrowserActions<"crawledContent">
     ) {

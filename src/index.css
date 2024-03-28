@@ -112,11 +112,19 @@ textarea {
   background-color: transparent;
 }
 
+svg{
+  height: 20px;
+}
+
 @media (prefers-color-scheme: light) {
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --primaryBackground: rgb(50, 50, 50);
+  }
+
+  *:not(label, input) {
+    color: white !important;
   }
 }

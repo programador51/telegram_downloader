@@ -17,13 +17,25 @@
     background: #80808014;
   }
 
-  span,p{
-    margin:0;
+  span,
+  p {
+    margin: 0;
   }
 
   img {
     height: 150px;
     object-fit: contain;
     width: 100%;
+  }
+}
+
+.downloadOptions {
+  display: grid;
+  grid-template-columns: 45% 45%;
+  justify-content: space-between;
+  * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
