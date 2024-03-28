@@ -11,8 +11,6 @@
     "16": "16x16.png",
     "256": "256x256.png"
   },
-  "background_color": "#78c2ad",
-
   "content_scripts": [
     {
       "matches": ["https://*.web.telegram.org/*"],

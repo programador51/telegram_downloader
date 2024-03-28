@@ -8,6 +8,7 @@ import { saveAs } from "file-saver";
 
 export default function useAddOn() {
   const [state, setState] = useState<CrawledImageDom[]>([]);
+  const [isTelegramK, setIsTelegramK] = useState<boolean | null>(null);
 
   const global = useContext(ContextGlobal);
 
@@ -20,15 +21,24 @@ export default function useAddOn() {
       const parsedMessage: MessageBrowserActions<"crawledContent"> =
         typeof message === "string" ? JSON.parse(message) : message;
 
-      appendCrawledImage(parsedMessage.message);
+      const images =
+        typeof parsedMessage.message === "string"
+          ? []
+          : parsedMessage.message.images;
+
+      appendCrawledImage(images);
     });
 
     browser.runtime.onMessageExternal.addListener(
       (message: MessageBrowserActions<"crawledContent">) => {
         const parsedMessage: MessageBrowserActions<"crawledContent"> =
           typeof message === "string" ? JSON.parse(message) : message;
+        const images =
+          typeof parsedMessage.message === "string"
+            ? []
+            : parsedMessage.message.images;
 
-        appendCrawledImage(parsedMessage.message);
+        appendCrawledImage(images);
       }
     );
 
@@ -37,8 +47,26 @@ export default function useAddOn() {
       message: "",
     };
 
+    browser.tabs
+      .query({
+        active: true,
+        currentWindow: true,
+      })
+      .then(([tab]) => {
+        const result = checkIsTelegramK(tab.url || "");
+        setIsTelegramK(result);
+        return;
+      });
+
     browser.runtime.sendMessage(JSON.stringify(triggerMessage));
   }, [global]);
+
+  function checkIsTelegramK(url: string): boolean | null {
+    if (url === "") return null;
+
+    const telegramUrlPattern = /^https:\/\/web\.telegram\.org\/k\/.*/;
+    return telegramUrlPattern.test(url);
+  }
 
   function appendCrawledImage(dto: string | CrawledImageDom[]) {
     const crawledContent: CrawledImageDom[] =
@@ -66,5 +94,6 @@ export default function useAddOn() {
   return {
     handleDownloadAll,
     state,
+    isTelegramK,
   };
 }

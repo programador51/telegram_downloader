@@ -3,6 +3,7 @@ import { showHiddenMediaBtns } from "./helpers/content_script";
 import { MessageBrowserActions } from "./helpers/content_script/types";
 import { CrawledImageDom } from "./typesContentScript";
 
+// TODO: Instead of sending the content, render a button to download from the DOM
 // // Create a new instance of MutationObserver
 // const observer = new MutationObserver(async (mutationsList) => {
 //   for (const mutation of mutationsList) {
@@ -21,7 +22,7 @@ import { CrawledImageDom } from "./typesContentScript";
 //             blob: base64Image,
 //             height: targetElement.naturalWidth,
 //             width: targetElement.naturalHeight,
-            
+
 //           }],
 //         };
 
@@ -64,9 +65,8 @@ function hasSiblingButtons(element: Element) {
   return false;
 }
 
-function sendImages(information:MessageBrowserActions<"crawledContent">){
-
-  console.log(information)
+function sendImages(information: MessageBrowserActions<"crawledContent">) {
+  console.log(information);
 
   browser.runtime.sendMessage(JSON.stringify(information));
 }
@@ -99,10 +99,10 @@ async function downloadImageAsBase64(url: string | null): Promise<string> {
  * Get the images of the telegram chat
  * @returns Crawled images
  */
-async function getAllImages():Promise<CrawledImageDom[]> {
+async function getAllImages(): Promise<CrawledImageDom[]> {
   const container = document.getElementById("column-center");
 
-  if (container === null) return []
+  if (container === null) return [];
 
   // Use querySelectorAll to select all elements with class 'media-photo' inside the container
   const mediaPhotos = container.querySelectorAll(".media-photo");
@@ -110,39 +110,45 @@ async function getAllImages():Promise<CrawledImageDom[]> {
   // Convert the NodeList to an array (optional)
   const mediaPhotosArray = Array.from(mediaPhotos);
 
-  const photos = [...mediaPhotosArray].map(item=>(async function(){
-    if (hasSiblingButtons(item)) return null;
+  const photos = [...mediaPhotosArray].map((item) =>
+    (async function () {
+      if (hasSiblingButtons(item)) return null;
 
-    const imageElement = item as HTMLImageElement;
+      const imageElement = item as HTMLImageElement;
 
-    const base64Image = await downloadImageAsBase64(item.getAttribute("src"));
+      const base64Image = await downloadImageAsBase64(item.getAttribute("src"));
 
-    const crawledContent: CrawledImageDom = {
-      blob: base64Image,
-      height: imageElement.naturalWidth,
-      width: imageElement.naturalHeight,
-    };  
-  
-    return crawledContent
-  
-  })());
+      const crawledContent: CrawledImageDom = {
+        blob: base64Image,
+        height: imageElement.naturalWidth,
+        width: imageElement.naturalHeight,
+      };
+
+      return crawledContent;
+    })()
+  );
 
   const photosFetched = await Promise.all(photos);
 
-  const parsedPhotos = photosFetched.filter(item=>item!==null && item.blob.length>=1) as CrawledImageDom[];
+  const parsedPhotos = photosFetched.filter(
+    (item) => item !== null && item.blob.length >= 1
+  ) as CrawledImageDom[];
 
+  if (parsedPhotos.length >= 1) return parsedPhotos;
 
-  if(parsedPhotos.length >= 1) return parsedPhotos;
-
-  return []
+  return [];
 }
 
 function listenAddOn() {
   browser.runtime.onMessage.addListener(async () => {
-    const images = await getAllImages();
+    const [images] = await Promise.all([getAllImages()]);
+
     sendImages({
-      action:"crawledContent",
-      message:images
-    })
+      action: "crawledContent",
+      message: {
+        images,
+        urlTab: "",
+      },
+    });
   });
 }

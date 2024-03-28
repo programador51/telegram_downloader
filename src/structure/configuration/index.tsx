@@ -32,7 +32,8 @@ export default function ConfigurationAddOn() {
           <small>This applys only when you use the "Download All" button</small>
         </div>
 
-        <div className="mb-4">
+        {/* TODO: Uncomment once the funciotnality of content_scripts works as expected */}
+        {/* <div className="mb-4">
           <label htmlFor="displayDownloadOnUi" className="form-label">
             Display download button on chat
           </label>
@@ -50,7 +51,7 @@ export default function ConfigurationAddOn() {
             Displays a download button down each media found on the telegram
             chat
           </small>
-        </div>
+        </div> */}
 
         <div className="mb-4">
           <label htmlFor="avoidThumbnails" className="form-label">

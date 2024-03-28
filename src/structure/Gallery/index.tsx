@@ -9,8 +9,9 @@ export default function Gallery({ items = [] }: PropsGallery) {
   if (items.length <= 0)
     return (
       <div className="p-5">
-        <p>1. Scroll throught your chat</p>
-        <p>2. Once you find media, re-open this popup</p>
+        <p>1. Open a chat</p>
+        <p>2. Navigate throught your chat</p>
+        <p>3. Once you find media, re-open this popup</p>
 
         <hr />
 

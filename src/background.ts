@@ -5,8 +5,8 @@ import { MessageBrowserActions } from "./helpers/content_script/types";
 // Listen for messages from the content script
 browser.runtime.onMessage.addListener(async (message: string) => {
   const parsedMessage: AddOnMessage = JSON.parse(message);
-  
-  console.log('background',parsedMessage);
+
+  console.log("background", parsedMessage);
 
   switch (parsedMessage.action) {
     case "crawledContent": {
@@ -43,5 +43,22 @@ async function requestFetchedImages() {
 async function receiveCrawledData(
   information: MessageBrowserActions<"crawledContent">
 ) {
-  browser.runtime.sendMessage(JSON.stringify(information));
+
+  const tab = await getTab();
+
+  browser.runtime.sendMessage(
+    JSON.stringify({
+      images: information,
+      urlTab: tab.url,
+    })
+  );
 }
+
+  async function getTab() {
+    const [tab] = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+
+    return tab;
+  }
