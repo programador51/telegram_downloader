@@ -4,13 +4,15 @@
   "version": "1.0.0",
   "short_name": "Tg Downloader",
   "manifest_version": 2,
-  "permissions": [
-    "activeTab",
-    "tabs"
-  ],
+  "permissions": ["activeTab", "tabs"],
   "icons": {
-    "48": "tg.jpg"
+    "48": "48x48.png",
+    "128": "128x128.png",
+    "16": "16x16.png",
+    "256": "256x256.png"
   },
+  "background_color": "#78c2ad",
+
   "content_scripts": [
     {
       "matches": ["https://*.web.telegram.org/*"],
@@ -25,7 +27,7 @@
     "default_popup": "index.html",
     "default_title": "Telegram downloader",
     "default_icon": {
-      "48": "tg.jpg"
+      "48": "48x48.png"
     }
   }
 }
