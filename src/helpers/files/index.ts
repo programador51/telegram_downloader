@@ -1,4 +1,5 @@
 import JSZip from "jszip";
+import { ChunkI, StreamDecoded } from "../../typesBackgroundScript";
 
 export async function zipGallery(gallery: string[]): Promise<Blob> {
   const zip = new JSZip();
@@ -106,4 +107,39 @@ export function downloadBase64(base64: string) {
   URL.revokeObjectURL(url);
 
   return blob;
+}
+
+export function decodeStreamChunks(url: string): ChunkI | undefined {
+  const encodedJson = url.split("/").pop();
+
+  if (typeof encodedJson !== "string") return undefined;
+
+  const decodedJson = decodeURIComponent(encodedJson);
+  const videoData: StreamDecoded = JSON.parse(decodedJson);
+
+  return {
+    ...videoData,
+    url,
+  };
+}
+
+export async function fetchAndCombineStreams(streamUrls:string[]) {
+  const responses = await Promise.all(streamUrls.map(url => fetch(url)));
+  const blobs = await Promise.all(responses.map(response => response.blob()));
+
+  // Combine blobs into a single file (e.g., concatenate binary data)
+  // This step may vary depending on the format and encoding of the video streams
+
+  return new Blob(blobs, { type: "video/mp4" }); // Adjust the MIME type as needed
+}
+
+export function downloadCombinedFile(blob:Blob, filename:string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename || "combined_video.mp4"; // Default filename
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }

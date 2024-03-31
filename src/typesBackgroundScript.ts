@@ -19,3 +19,23 @@ export type ValidIndexedActions = {
     information: MessageBrowserActions<"crawledContent">
   ) => void;
 };
+
+export interface StreamDecoded {
+  dcId: number;
+  location: {
+    "-": string;
+    id: string;
+    access_hash: string;
+    file_reference: number[];
+  };
+  size: number;
+  mimeType: string;
+}
+
+export interface ChunkI extends StreamDecoded {
+  url: string;
+}
+
+export interface GroupedChunksI {
+  [key: string]: string[];
+}

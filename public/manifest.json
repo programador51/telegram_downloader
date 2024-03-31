@@ -4,7 +4,13 @@
   "version": "1.2.1",
   "short_name": "Tg Downloader",
   "manifest_version": 2,
-  "permissions": ["activeTab", "tabs"],
+  "permissions": [
+    "activeTab", 
+    "tabs",
+    "webRequest",
+    "webRequestBlocking",
+    "https://web.telegram.org/k"
+  ],
   "icons": {
     "48": "48x48.png",
     "128": "128x128.png",

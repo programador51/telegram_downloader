@@ -5,7 +5,7 @@ export interface CrawlingInformation {
   urlTab: string;
 }
 
-export type BrowserMessage = "crawledContent" | "popUpOpened";
+export type BrowserMessage = "crawledContent" | "popUpOpened" | "chunks";
 
 export interface MessageBrowserActions<T extends BrowserMessage> {
   action: T;

@@ -1,47 +1,102 @@
 import browser from "webextension-polyfill";
-import { showHiddenMediaBtns } from "./helpers/content_script";
+import {
+  formatButtonsDownload,
+  showHiddenMediaBtns,
+} from "./helpers/content_script";
 import { MessageBrowserActions } from "./helpers/content_script/types";
 import { CrawledImageDom } from "./typesContentScript";
 
-// TODO: Instead of sending the content, render a button to download from the DOM
-// // Create a new instance of MutationObserver
-// const observer = new MutationObserver(async (mutationsList) => {
-//   for (const mutation of mutationsList) {
-//     if (mutation.type === "attributes") {
-//       const targetElement = mutation.target as HTMLImageElement;
-//       if (
-//         targetElement.tagName === "IMG" &&
-//         targetElement.classList.contains("media-photo") &&
-//         !hasSiblingButtons(targetElement)
-//       ) {
-//         const base64Image = await downloadImageAsBase64(targetElement.src);
-
-//         const information: MessageBrowserActions<"crawledContent"> = {
-//           action: "crawledContent",
-//           message: [{
-//             blob: base64Image,
-//             height: targetElement.naturalWidth,
-//             width: targetElement.naturalHeight,
-
-//           }],
-//         };
-
-//         sendImages(information);
-//       }
-//     }
-//   }
-// });
-
-// // Configure the MutationObserver to observe changes to attributes of elements with class "media-photo"
-// const config = { attributes: true, attributeFilter: ["class"], subtree: true };
-
-// // Start observing mutations
-// observer.observe(document.body, config);
-
 showHiddenMediaBtns();
 listenAddOn();
+formatButtonsDownload();
+observeMediaElementChanges();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function observeMediaElementChanges() {
+  // Create a new instance of MutationObserver
+  const observer = new MutationObserver((mutationsList) => {
+    mutationsList.forEach((mutation) => {
+      // Check if any added nodes match the classes "media-photo" or "media-video"
+      if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
+        Array.from(mutation.addedNodes).forEach((node) => {
+          if (node instanceof HTMLElement) {
+            if (
+              node.classList.contains("media-photo") ||
+              node.classList.contains("media-video")
+            ) {
+              if (node.tagName === "VIDEO" || node.tagName === "IMG")
+                createDownloadButton(node);
+            }
+          }
+        });
+      }
+    });
+  });
+
+  // Configure the MutationObserver to observe changes to the subtree of the document
+  const config = { childList: true, subtree: true };
+
+  // Start observing mutations
+  observer.observe(document.body, config);
+}
+
+async function downloadImage(dom: HTMLElement) {
+  dom.click();
+
+  const media = await getMediaControls();
+
+  const downloadBtn = media.childNodes[2] as HTMLElement;
+
+  downloadBtn.click();
+  const escapeKeyEvent = new KeyboardEvent("keydown", {
+    key: "Escape",
+    code: "Escape",
+    keyCode: 27,
+    which: 27,
+  });
+
+  setTimeout(function () {
+    dom.dispatchEvent(escapeKeyEvent);
+  }, 250);
+}
+
+async function getMediaControls(): Promise<HTMLElement> {
+  return new Promise((resolve) => {
+    const checkForControls = () => {
+      const containerMedia = document.getElementsByClassName(
+        "media-viewer-buttons"
+      );
+      console.log({ containerMedia });
+      if (containerMedia.length > 0) {
+        resolve(containerMedia[0] as HTMLElement);
+      } else {
+        // DOM element not found, wait and check again
+        setTimeout(() => {
+          checkForControls();
+        }, 250);
+      }
+    };
+
+    // Start checking for controls
+    checkForControls();
+  });
+}
+
+function createDownloadButton(targetElement: HTMLElement) {
+  const downloadButton = document.createElement("button");
+  downloadButton.classList.add("telegramGoesBrrrrrrr");
+  downloadButton.textContent = "Download";
+  downloadButton.addEventListener(
+    "click",
+    async () => await downloadImage(targetElement)
+  );
+
+  // Append the button as a sibling to the target image
+  targetElement.parentNode?.insertBefore(
+    downloadButton,
+    targetElement.nextSibling
+  );
+}
 
 function hasSiblingButtons(element: Element) {
   // Check if the previous sibling exists and is a button
@@ -66,12 +121,10 @@ function hasSiblingButtons(element: Element) {
 }
 
 function sendImages(information: MessageBrowserActions<"crawledContent">) {
-  console.log(information);
-
   browser.runtime.sendMessage(JSON.stringify(information));
 }
 
-async function downloadImageAsBase64(url: string | null): Promise<string> {
+async function retrieveImageAsBase64(url: string | null): Promise<string> {
   if (url === null) return "";
 
   try {
@@ -91,6 +144,7 @@ async function downloadImageAsBase64(url: string | null): Promise<string> {
       reader.onerror = reject;
     });
   } catch (error) {
+    console.error(error);
     return "";
   }
 }
@@ -116,7 +170,7 @@ async function getAllImages(): Promise<CrawledImageDom[]> {
 
       const imageElement = item as HTMLImageElement;
 
-      const base64Image = await downloadImageAsBase64(item.getAttribute("src"));
+      const base64Image = await retrieveImageAsBase64(item.getAttribute("src"));
 
       const crawledContent: CrawledImageDom = {
         blob: base64Image,
