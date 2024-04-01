@@ -5,7 +5,7 @@ export default function Header() {
   return (
     <div className={ui.header}>
       <SettingsNav />
-      <h1>Telegram Downloader 1.0.0</h1>
+      <h1>Telegram Downloader 1.3.0</h1>
     </div>
   );
 }
