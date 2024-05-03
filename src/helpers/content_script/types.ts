@@ -5,9 +5,21 @@ export interface CrawlingInformation {
   urlTab: string;
 }
 
-export type BrowserMessage = "crawledContent" | "popUpOpened" | "chunks";
+export type BrowserMessage = "crawledContent" | "popUpOpened" | "chunks" | "downloadImage";
 
 export interface MessageBrowserActions<T extends BrowserMessage> {
   action: T;
-  message: T extends "crawledContent" ? CrawlingInformation | string : string;
+  message: T extends "crawledContent"
+    ? CrawlingInformation|string
+    : T extends "popUpOpened"
+    ? string
+    : T extends "chunks"
+    ? string
+    : T extends "downloadImage"
+    ? DownloadImageMessage
+    : string
+}
+
+export interface DownloadImageMessage{
+  base64:string;
 }

@@ -1,11 +1,11 @@
 {
   "name": "telegram_addon_downloader",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.4.0",
   "author": {
     "name": "José Luis Pérez Olguín"
   },
-  "description": "Firefox extension to download content from private/non downloable groups or channels",
+  "description": "Firefox extension to download content from private/non downloable groups or channels. https://allmylinks.com/programador51",
   "keywords": [
     "react",
     "download",

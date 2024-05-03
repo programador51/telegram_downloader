@@ -3,4 +3,5 @@ export interface PropsImageDetected {
   sentAt: number;
   width:number;
   height:number;
+  urlSrc:string;
 }

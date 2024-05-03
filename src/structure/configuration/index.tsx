@@ -2,6 +2,7 @@ import ui from "./styles.module.scss";
 import { Link } from "react-router-dom";
 import { ContextGlobal } from "./Global";
 import { useContext } from "react";
+import PathDownload from "./PathDownload";
 
 export default function ConfigurationAddOn() {
   const global = useContext(ContextGlobal);
@@ -32,26 +33,7 @@ export default function ConfigurationAddOn() {
           <small>This applys only when you use the "Download All" button</small>
         </div>
 
-        {/* TODO: Uncomment once the funciotnality of content_scripts works as expected */}
-        {/* <div className="mb-4">
-          <label htmlFor="displayDownloadOnUi" className="form-label">
-            Display download button on chat
-          </label>
-          <select
-            value={+global.displayDownloadOnChat}
-            onChange={(e) => global.setDisplayDownloadOnChat(!!+e.target.value)}
-            name="displayDownloadOnUi"
-            id="displayDownloadOnUi"
-            className="form-select"
-          >
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-          </select>
-          <small>
-            Displays a download button down each media found on the telegram
-            chat
-          </small>
-        </div> */}
+        <PathDownload />
 
         <div className="mb-4">
           <label htmlFor="avoidThumbnails" className="form-label">
@@ -68,7 +50,7 @@ export default function ConfigurationAddOn() {
             <option value="1">No</option>
           </select>
           <small>
-            If you want to ignore them on the results of the PopUp extension. 
+            If you want to ignore them on the results of the PopUp extension.
             (Images that has less of 320px of size on width and height)
           </small>
         </div>

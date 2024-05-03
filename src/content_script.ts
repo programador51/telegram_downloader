@@ -5,6 +5,7 @@ import {
 } from "./helpers/content_script";
 import { MessageBrowserActions } from "./helpers/content_script/types";
 import { CrawledImageDom } from "./typesContentScript";
+import { checkIsVideDomTag, retrieveAddOnConfiguration } from "./helpers/dom";
 
 showHiddenMediaBtns();
 listenAddOn();
@@ -40,14 +41,27 @@ function observeMediaElementChanges() {
   observer.observe(document.body, config);
 }
 
-async function downloadImage(dom: HTMLElement) {
+/**
+ * 
+ * @param targetElement - This can be an `img` tag or `video` tag
+ */
+async function downloadImage(dom: HTMLImageElement|HTMLElement) {
+
+  const isVideo = checkIsVideDomTag(dom);
+
+  // TODO: Implement the download for video as possible without dom interaction
+  if(dom instanceof HTMLImageElement && !isVideo){
+    await downloadImageDom(dom.src);
+    return;
+  }
   dom.click();
 
   const media = await getMediaControls();
 
   const downloadBtn = media.childNodes[2] as HTMLElement;
 
-  downloadBtn.click();
+  downloadBtn.click();  
+
   const escapeKeyEvent = new KeyboardEvent("keydown", {
     key: "Escape",
     code: "Escape",
@@ -66,7 +80,6 @@ async function getMediaControls(): Promise<HTMLElement> {
       const containerMedia = document.getElementsByClassName(
         "media-viewer-buttons"
       );
-      console.log({ containerMedia });
       if (containerMedia.length > 0) {
         resolve(containerMedia[0] as HTMLElement);
       } else {
@@ -176,6 +189,7 @@ async function getAllImages(): Promise<CrawledImageDom[]> {
         blob: base64Image,
         height: imageElement.naturalWidth,
         width: imageElement.naturalHeight,
+        urlSrc:imageElement.src
       };
 
       return crawledContent;
@@ -191,6 +205,32 @@ async function getAllImages(): Promise<CrawledImageDom[]> {
   if (parsedPhotos.length >= 1) return parsedPhotos;
 
   return [];
+}
+
+// blob:https://web.telegram.org/81018939-9915-4693-ae35-3e8828db5080
+
+/**
+ * 
+ * @param srcBlobUrl - Url of the blob saved on memory
+ * @returns {Promise<string>}
+ * @example
+ * 
+ * downloadImageItemDowm('blob:https://web.telegram.org/81018939-9915-4693-ae35-3e8828db5080')
+ */
+async function downloadImageDom(srcBlobUrl:string):Promise<void>{
+  const base64Media = await retrieveImageAsBase64(srcBlobUrl);
+
+  const config = retrieveAddOnConfiguration();
+
+  const message = {
+    base64:base64Media,
+    path:config.downloadPath
+  };
+
+  browser.runtime.sendMessage(JSON.stringify({
+    action:"downloadImage",
+    message
+  }));
 }
 
 function listenAddOn() {

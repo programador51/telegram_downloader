@@ -1,11 +1,11 @@
 import JSZip from "jszip";
 import { ChunkI, StreamDecoded } from "../../typesBackgroundScript";
+import mime from "mime-types";
 
 export async function zipGallery(gallery: string[]): Promise<Blob> {
   const zip = new JSZip();
   for (let i = 0; i < gallery.length; i++) {
-
-    const name = `${i+1}`.padStart(10,"0");
+    const name = `${i + 1}`.padStart(10, "0");
 
     zip.file(`${name}.jpg`, gallery[i].split(",")[1], {
       base64: true,
@@ -75,7 +75,7 @@ export function retrieveSize(fullBase64String: string): number {
   return binarySize;
 }
 
-function base64toBlob(base64: string) {
+export function base64toBlob(base64: string) {
   const byteCharacters = atob(base64.split(",")[1]);
   const byteNumbers = new Array(byteCharacters.length);
   for (let i = 0; i < byteCharacters.length; i++) {
@@ -123,9 +123,9 @@ export function decodeStreamChunks(url: string): ChunkI | undefined {
   };
 }
 
-export async function fetchAndCombineStreams(streamUrls:string[]) {
-  const responses = await Promise.all(streamUrls.map(url => fetch(url)));
-  const blobs = await Promise.all(responses.map(response => response.blob()));
+export async function fetchAndCombineStreams(streamUrls: string[]) {
+  const responses = await Promise.all(streamUrls.map((url) => fetch(url)));
+  const blobs = await Promise.all(responses.map((response) => response.blob()));
 
   // Combine blobs into a single file (e.g., concatenate binary data)
   // This step may vary depending on the format and encoding of the video streams
@@ -133,7 +133,7 @@ export async function fetchAndCombineStreams(streamUrls:string[]) {
   return new Blob(blobs, { type: "video/mp4" }); // Adjust the MIME type as needed
 }
 
-export function downloadCombinedFile(blob:Blob, filename:string) {
+export function downloadCombinedFile(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -142,4 +142,36 @@ export function downloadCombinedFile(blob:Blob, filename:string) {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+export function retrieveExtension(base64: string): string {
+  const mimeRetrieved = base64.split(";")[0].split(":")[1];
+
+  const ext = mime.extension(mimeRetrieved);
+
+  if (typeof ext === "string") return ext;
+
+  return "";
+}
+
+export async function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+
+    fileReader.onload = function () {
+      const base64String = btoa(
+        new Uint8Array(this.result as ArrayBuffer).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ""
+        )
+      );
+      resolve(base64String);
+    };
+
+    fileReader.onerror = function () {
+      reject(this.error);
+    };
+
+    fileReader.readAsArrayBuffer(blob);
+  });
 }

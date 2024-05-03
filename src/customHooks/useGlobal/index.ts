@@ -1,31 +1,33 @@
-import { useEffect, useState } from "react";
-import { GlobalStateI, ReturnUseGlobal } from "./types";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { GlobalStateI, ReturnUseGlobal, SetPathDownload, TypePath } from "./types";
+import { retrieveAddOnConfiguration } from "../../helpers/dom";
 
 const INITIAL_STATE: GlobalStateI = {
   showThumbnails: false,
   zipBulkDownloads: false,
   displayDownloadOnChat: true,
   initialLoad: true,
+  downloadPath: "/",
+  typePath:"root"
 };
 
 export default function useGlobal(): ReturnUseGlobal {
   const [state, setState] = useState<GlobalStateI>(INITIAL_STATE);
 
+  const pathTypes:MutableRefObject<{[key in TypePath]:TypePath}> = useRef({
+    custom:"custom",
+    default:"default",
+    root:"root"
+  });
+
   useEffect(() => {
-    const data = window.localStorage.getItem("configuration");
-
-    const parsedData: GlobalStateI =
-      data === null ? INITIAL_STATE : JSON.parse(data);
-
-    window.localStorage.setItem("configuration", JSON.stringify(parsedData));
+    const parsedData = retrieveAddOnConfiguration();
     setState({ ...parsedData, initialLoad: false });
   }, []);
 
   useEffect(() => {
     if (state.initialLoad) return;
-
     const info = JSON.stringify(state);
-
     window.localStorage.setItem("configuration", info);
   }, [state]);
 
@@ -47,10 +49,29 @@ export default function useGlobal(): ReturnUseGlobal {
       displayDownloadOnChat,
     }));
 
+  const setPathDownload: SetPathDownload = (type, path = "/") => {
+    if (type === "default" || type==="custom") {
+      setState((current) => ({
+        ...current,
+        typePath:type,
+        downloadPath: path,
+      }));
+      return;
+    }
+
+    setState(current=>({
+      ...current,
+      typePath:type,
+      downloadPath:""
+    }))
+  };
+
   return {
     ...state,
     setShowThumbnails,
     setBulkDownload,
     setDisplayDownloadOnChat,
+    setPathDownload,
+    pathTypes:pathTypes.current
   };
 }

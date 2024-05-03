@@ -27,6 +27,7 @@ export default function Gallery({ items = [] }: PropsGallery) {
     <div className={ui.gallery}>
       {items.map((image, i) => (
         <ImageDetected
+          urlSrc={image.urlSrc||""}
           key={`${key.current}-${i}`}
           blobSrc={image.blob}
           sentAt={1}

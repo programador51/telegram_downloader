@@ -2,11 +2,11 @@ import browser from "webextension-polyfill";
 import { CrawledImageDom } from "../../typesContentScript";
 import { useContext, useEffect, useState } from "react";
 import { MessageBrowserActions } from "../../helpers/content_script/types";
-import { downloadBase64, zipGallery } from "../../helpers/files";
+import { blobToBase64, zipGallery } from "../../helpers/files";
 import { ContextGlobal } from "../../structure/configuration/Global";
-import { saveAs } from "file-saver";
+import { ReturnUseAddOn } from "./types";
 
-export default function useAddOn() {
+export default function useAddOn():ReturnUseAddOn {
   const [state, setState] = useState<CrawledImageDom[]>([]);
   const [isTelegramK, setIsTelegramK] = useState<boolean | null>(null);
 
@@ -85,15 +85,32 @@ export default function useAddOn() {
 
       const zippedFiles = await zipGallery(toZip);
 
-      saveAs(zippedFiles, `${window.crypto.randomUUID()}.zip`);
+      const b64ZipFile = await blobToBase64(zippedFiles);
+      attemptDownloadFile(`data:application/zip;base64,${b64ZipFile}`)
     } else {
-      state.forEach((data) => downloadBase64(data.blob));
+      state.forEach((data) => attemptDownloadFile(data.blob));
     }
+  }
+
+  /**
+   * Download the file with `background_scripts` file
+   * @param blob - Url of the blob
+   */
+  async function attemptDownloadFile(blob:string){
+    const dto:MessageBrowserActions<"downloadImage"> = {
+      action:"downloadImage",
+      message:{
+        base64:blob
+      }
+    }
+
+    browser.runtime.sendMessage(JSON.stringify(dto));
   }
 
   return {
     handleDownloadAll,
     state,
     isTelegramK,
+    attemptDownloadFile
   };
 }

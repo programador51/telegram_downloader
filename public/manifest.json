@@ -9,7 +9,8 @@
     "tabs",
     "webRequest",
     "webRequestBlocking",
-    "https://web.telegram.org/k"
+    "https://web.telegram.org/k",
+    "downloads"
   ],
   "icons": {
     "48": "48x48.png",

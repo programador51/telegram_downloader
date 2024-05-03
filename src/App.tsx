@@ -2,6 +2,13 @@ import ui from "./styles.module.scss";
 import useAddOn from "./customHooks/useAddOn";
 import Header from "./molescules/Header";
 import Gallery from "./structure/Gallery";
+import { createContext } from "react";
+import { ReturnUseAddOn } from "./customHooks/useAddOn/types";
+import ClickMe from "./molescules/Clickme";
+
+export const AddOnContext = createContext<ReturnUseAddOn | undefined>(
+  undefined
+);
 
 function App() {
   const hook = useAddOn();
@@ -20,6 +27,11 @@ function App() {
         <p className="mx-5">
           Once you enter the link, close and open this popup
         </p>
+
+        <div className={`mx-5 ${ui.pleaseClickMe}`}>
+          <p>Btw, if you like this extension check out my other works</p>
+          <ClickMe />
+        </div>
       </main>
     );
 
@@ -32,27 +44,33 @@ function App() {
     );
 
   return (
-    <main className={ui.addOn}>
-      <Header />
+    <AddOnContext.Provider value={hook}>
+      <main className={ui.addOn}>
+        <Header />
 
-      <Gallery items={hook.state} />
+        <Gallery items={hook.state} />
 
-      {hook.state.length >= 1 ? (
-        <footer>
-          <p className="m-0">
-            Pictures found
-            <span className="mx-2 badge bg-info">{hook.state.length}</span>{" "}
-          </p>
+        {hook.state.length >= 1 ? (
+          <footer>
+            <p className="m-0">
+              Pictures found
+              <span className="mx-2 badge bg-info">{hook.state.length}</span>
+            </p>
 
-          <button
-            className="btn btn-primary"
-            onClick={async () => await hook.handleDownloadAll()}
-          >
-            Download all
-          </button>
-        </footer>
-      ) : null}
-    </main>
+            <div className={ui.footerInfo}>
+              <ClickMe />
+
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={async () => await hook.handleDownloadAll()}
+              >
+                Download all
+              </button>
+            </div>
+          </footer>
+        ) : null}
+      </main>
+    </AddOnContext.Provider>
   );
 }
 

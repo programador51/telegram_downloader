@@ -1,8 +1,9 @@
 import browser from "webextension-polyfill";
 import { AddOnMessage} from "./typesBackgroundScript";
-import { MessageBrowserActions } from "./helpers/content_script/types";
-import { decodeStreamChunks, fetchAndCombineStreams } from "./helpers/files";
+import { DownloadImageMessage, MessageBrowserActions } from "./helpers/content_script/types";
+import { base64toBlob, decodeStreamChunks, fetchAndCombineStreams, retrieveExtension } from "./helpers/files";
 import { saveAs } from "file-saver";
+import { retrieveAddOnConfiguration } from "./helpers/dom";
 
 // Listen for messages from the content script
 browser.runtime.onMessage.addListener(async (message: string) => {
@@ -28,6 +29,12 @@ browser.runtime.onMessage.addListener(async (message: string) => {
       break;
     }
 
+    case "downloadImage":{
+      const dto:MessageBrowserActions<"downloadImage"> = JSON.parse(message)
+      downloadImage(dto.message);
+      break;
+    }
+
     default:
       return;
   }
@@ -36,6 +43,32 @@ browser.runtime.onMessage.addListener(async (message: string) => {
 storeVideoStreamRequests();
 
 ////////////////////////////////////////////////////////////////////////////
+function downloadImage(dto:DownloadImageMessage){
+  try {
+    const url = URL.createObjectURL(base64toBlob(dto.base64));
+
+    const { downloadPath } = retrieveAddOnConfiguration();
+
+    const extension = retrieveExtension(dto.base64);
+
+    let filename = "";
+
+    if(downloadPath!=="/")  filename = `${downloadPath.substring(1,downloadPath.length)}/${window.crypto.randomUUID()}.${extension}`    
+    
+    if(downloadPath==="/"||downloadPath==="") filename = `${window.crypto.randomUUID()}.${extension}`;
+
+    console.log({filename , downloadPath})
+    
+    browser.downloads.download({
+      url,
+      filename,
+    });
+  } catch (error) {
+    console.log({error});
+    alert(`There's has been an error to download the image, please report it on telegram group. Error code: 'f4853378-ff59-4fc6-ad26-5e2dc423eec6'`);
+  }
+}
+
 
 function downloadMediaVideo(urls:string[]){
   fetchAndCombineStreams(urls)

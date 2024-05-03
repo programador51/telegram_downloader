@@ -1,12 +1,13 @@
 import { PropsImageDetected } from "./types";
 import ui from "./styles.module.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
-  downloadBase64Content,
+  // downloadBase64Content,
   openInNewTab,
   retrieveSize,
 } from "../../helpers/files";
 import byteSize from "byte-size";
+import { AddOnContext } from "../../App";
 
 export default function ImageDetected({
   blobSrc = "",
@@ -17,6 +18,8 @@ export default function ImageDetected({
     isDownloading: false,
     labelSize: "",
   });
+
+  const hook = useContext(AddOnContext);
 
   useEffect(() => {
     const bytesOfBase64 = retrieveSize(blobSrc);
@@ -35,7 +38,10 @@ export default function ImageDetected({
       isDownloading: true,
     }));
 
-    downloadBase64Content(blobSrc);
+    // NOTE: Commented cause files now will be downloaded by the backgronud_scripts
+    // downloadBase64Content(blobSrc);
+
+    hook?.attemptDownloadFile(blobSrc);
 
     setState((current) => ({
       ...current,

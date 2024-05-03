@@ -1,4 +1,8 @@
-export function getVideoSibling(targetElement: HTMLElement): HTMLVideoElement | null {
+import { GlobalStateI } from "../../customHooks/useGlobal/types";
+
+export function getVideoSibling(
+  targetElement: HTMLElement
+): HTMLVideoElement | null {
   // Get the parent node of the target element
   const parent = targetElement.parentNode;
 
@@ -18,7 +22,7 @@ export function getVideoSibling(targetElement: HTMLElement): HTMLVideoElement | 
 
   // Iterate over siblings to find the <video> element
 
-  let videoTag:(HTMLVideoElement|null) = null;
+  let videoTag: HTMLVideoElement | null = null;
 
   for (let i = 0; i < childrenArray.length; i++) {
     // Skip the target element itself
@@ -29,10 +33,41 @@ export function getVideoSibling(targetElement: HTMLElement): HTMLVideoElement | 
     const sibling = childrenArray[i];
     // Check if the sibling is a <video> element
     if (sibling instanceof HTMLVideoElement) {
-        videoTag = sibling;
+      videoTag = sibling;
     }
   }
 
   // If no <video> sibling is found, return null
   return videoTag;
+}
+
+export function retrieveAddOnConfiguration(): GlobalStateI {
+  const data = window.localStorage.getItem("configuration");
+
+  const parsedData: GlobalStateI =
+    data === null
+      ? {
+          showThumbnails: false,
+          zipBulkDownloads: false,
+          displayDownloadOnChat: true,
+          initialLoad: true,
+          downloadPath: "/",
+          typePath: "root",
+        }
+      : JSON.parse(data);
+
+  window.localStorage.setItem("configuration", JSON.stringify(parsedData));
+
+  return parsedData;
+}
+
+export function checkIsVideDomTag(node: HTMLElement): boolean {
+  let sibling = node.previousElementSibling;
+  while (sibling) {
+    if (sibling.classList.contains('video-time')) {
+      return true
+    }
+    sibling = sibling.previousElementSibling;
+  }
+  return false;
 }

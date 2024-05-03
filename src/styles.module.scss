@@ -46,3 +46,16 @@
     margin:0;
   }
 }
+
+.footerInfo{
+  display: flex;
+  gap:0 5px;
+}
+
+.pleaseClickMe{
+  display: flex;
+  flex-direction: column;
+  gap:10px 0;
+  align-items: center;
+  justify-content: center;
+}
